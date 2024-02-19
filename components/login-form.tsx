@@ -42,54 +42,70 @@ const LoginForm = ({
   });
 
   return (
-    <Form {...form}>
-      <form action={signIn} className="flex flex-col gap-4">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input {...field} type="email" name="email" placeholder="" />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+    <div className="flex flex-col">
+      <Form {...form}>
+        <form action={signIn} className="flex flex-col gap-4">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input {...field} type="email" name="email" placeholder="" />
+                </FormControl>
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  type="password"
-                  name="password"
-                  placeholder=""
-                  hidden={isMagicLinkChecked}
-                  required={!isMagicLinkChecked}
-                />
-              </FormControl>
-            </FormItem>
+          {!isMagicLinkChecked && (
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="password"
+                      name="password"
+                      placeholder=""
+                      required={!isMagicLinkChecked}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           )}
-        />
 
-        <div className="flex flex-col gap-4">
-          {!signUpInit ? (
-            <div className="flex justify-between">
-              <div className="flex gap-2 items-center">
-                <Checkbox
-                  id="magic-link"
-                  onCheckedChange={() => {
-                    console.log("clicked");
-                    setIsMagicLinkChecked(!isMagicLinkChecked);
-                  }}
-                />
-                <label htmlFor="magic-link">Use Magic Link</label>
+          <div className="flex flex-col gap-4">
+            {!signUpInit ? (
+              <div className="flex justify-between">
+                <div className="flex gap-2 items-center">
+                  <Checkbox
+                    id="magic-link"
+                    onCheckedChange={() => {
+                      console.log("clicked");
+                      setIsMagicLinkChecked(!isMagicLinkChecked);
+                    }}
+                  />
+                  <label htmlFor="magic-link">Use Magic Link</label>
+                </div>
+                {!isMagicLinkChecked && (
+                  <div className="flex gap-2 items-center">
+                    <Checkbox
+                      id="sign-up"
+                      onCheckedChange={() => {
+                        console.log("clicked");
+                        setSignUpInit(!signUpInit);
+                      }}
+                    />
+                    <label htmlFor="sign-up">New User</label>
+                  </div>
+                )}
               </div>
+            ) : (
               <div className="flex gap-2 items-center">
                 <Checkbox
                   id="sign-up"
@@ -98,33 +114,23 @@ const LoginForm = ({
                     setSignUpInit(!signUpInit);
                   }}
                 />
-                <label htmlFor="sign-up">New User</label>
+                <label htmlFor="sign-up">Already Have an account</label>
               </div>
-            </div>
-          ) : (
-            <div className="flex gap-2 items-center">
-              <Checkbox
-                id="sign-up"
-                onCheckedChange={() => {
-                  console.log("clicked");
-                  setSignUpInit(!signUpInit);
-                }}
-              />
-              <label htmlFor="sign-up">Already Have an account</label>
-            </div>
-          )}
+            )}
 
-          {isMagicLinkChecked ? (
-            <Button formAction={signInWithOtp}>Send Magic Link</Button>
-          ) : (
-            <div className="flex flex-col gap-4">
-              {!signUpInit && <Button type="submit">Log In</Button>}
-              {signUpInit && <Button formAction={signUp}>Sign Up</Button>}
-            </div>
-          )}
-        </div>
-      </form>
-    </Form>
+            {isMagicLinkChecked ? (
+              <Button formAction={signInWithOtp}>Send Magic Link</Button>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {!signUpInit && <Button type="submit">Log In</Button>}
+                {signUpInit && <Button formAction={signUp}>Sign Up</Button>}
+              </div>
+            )}
+          </div>
+        </form>
+      </Form>
+      <div>{searchParams.message}</div>
+    </div>
   );
 };
 
