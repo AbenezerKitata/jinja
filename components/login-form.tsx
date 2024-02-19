@@ -1,9 +1,13 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
-import { z } from "zod";
+import React, { ChangeEvent, useState } from "react";
+import { set, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -31,70 +35,96 @@ const LoginForm = ({
   };
 }) => {
   const [isMagicLinkChecked, setIsMagicLinkChecked] = useState(false);
-  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setIsMagicLinkChecked(event.target.checked);
-  };
+  const [signUpInit, setSignUpInit] = useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  });
 
   return (
-    <form
-      className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground"
-      action={signIn}
-    >
-      <label className="text-md" htmlFor="email">
-        Email
-      </label>
-      <input
-        className="rounded-md px-4 py-2 bg-inherit border mb-6"
-        name="email"
-        placeholder="you@example.com"
-        required
-      />
-      <label className="text-md" htmlFor="password">
-        Password
-      </label>
-      <input
-        className="rounded-md px-4 py-2 bg-inherit border mb-6"
-        type="password"
-        name="password"
-        placeholder="••••••••"
-        hidden={isMagicLinkChecked}
-        required={!isMagicLinkChecked}
-      />
-      <label className="flex items-center">
-        <input
-          type="checkbox"
-          name="magiclink"
-          className="mr-2"
-          onChange={handleCheckboxChange}
+    <Form {...form}>
+      <form action={signIn} className="flex flex-col gap-4">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input {...field} type="email" name="email" placeholder="" />
+              </FormControl>
+            </FormItem>
+          )}
         />
-        Use Magiclink instead
-      </label>
-      <button
-        className="bg-green-700 rounded-md px-4 py-2 text-foreground mb-2"
-        hidden={!isMagicLinkChecked}
-        formAction={signInWithOtp}
-      >
-        Send magic link
-      </button>
-      <button
-        hidden={isMagicLinkChecked}
-        className="bg-green-700 rounded-md px-4 py-2 text-foreground mb-2"
-      >
-        Sign In
-      </button>
-      <button
-        hidden={isMagicLinkChecked}
-        formAction={signUp}
-        className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2"
-      >
-        Sign Up
-      </button>
-      {searchParams?.message && (
-        <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
-          {searchParams.message}
-        </p>
-      )}
-    </form>
+
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="password"
+                  name="password"
+                  placeholder=""
+                  hidden={isMagicLinkChecked}
+                  required={!isMagicLinkChecked}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <div className="flex flex-col gap-4">
+          {!signUpInit ? (
+            <div className="flex justify-between">
+              <div className="flex gap-2 items-center">
+                <Checkbox
+                  id="magic-link"
+                  onCheckedChange={() => {
+                    console.log("clicked");
+                    setIsMagicLinkChecked(!isMagicLinkChecked);
+                  }}
+                />
+                <label htmlFor="magic-link">Use Magic Link</label>
+              </div>
+              <div className="flex gap-2 items-center">
+                <Checkbox
+                  id="sign-up"
+                  onCheckedChange={() => {
+                    console.log("clicked");
+                    setSignUpInit(!signUpInit);
+                  }}
+                />
+                <label htmlFor="sign-up">New User</label>
+              </div>
+            </div>
+          ) : (
+            <div className="flex gap-2 items-center">
+              <Checkbox
+                id="sign-up"
+                onCheckedChange={() => {
+                  console.log("clicked");
+                  setSignUpInit(!signUpInit);
+                }}
+              />
+              <label htmlFor="sign-up">Already Have an account</label>
+            </div>
+          )}
+
+          {isMagicLinkChecked ? (
+            <Button formAction={signInWithOtp}>Send Magic Link</Button>
+          ) : (
+            <div className="flex flex-col gap-4">
+              {!signUpInit && <Button type="submit">Log In</Button>}
+              {signUpInit && <Button formAction={signUp}>Sign Up</Button>}
+            </div>
+          )}
+        </div>
+      </form>
+    </Form>
   );
 };
 
