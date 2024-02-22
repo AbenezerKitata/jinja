@@ -1,4 +1,3 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client";
 import { FcGoogle } from "react-icons/fc";
@@ -17,7 +16,7 @@ export default function GoogleButtonAuth() {
   return (
     <Button
       variant="outline"
-      className="flex gap-2"
+      className="flex gap-2 w-full"
       type="button"
       onClick={() => {
         loginWithGoogle();

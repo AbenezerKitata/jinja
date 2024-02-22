@@ -9,8 +9,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
-import { FcGoogle } from "react-icons/fc";
-import GoogleButtonAuth from "./client-button-google-auth";
+import GoogleButtonAuth from "./button-google-auth";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -184,7 +183,9 @@ const LoginForm = ({
         </form>
       </Form>
       <div className="p-4">{searchParams?.message}</div>
-      <GoogleButtonAuth />
+      <div className="w-full" onClick={() => setLoading(true)}>
+        <GoogleButtonAuth />
+      </div>
     </div>
   );
 };
