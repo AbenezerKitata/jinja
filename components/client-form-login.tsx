@@ -1,13 +1,16 @@
 "use client";
 
-import React, { ChangeEvent, useState } from "react";
-import { set, z } from "zod";
+import React, { useState } from "react";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Loader2 } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
+import GoogleButtonAuth from "./client-button-google-auth";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -26,25 +29,43 @@ const LoginForm = ({
   signUp,
   signInWithOtp,
   searchParams,
+  signInWithGoogle,
 }: {
   signIn: (formData: FormData) => Promise<never>;
   signUp: (formData: FormData) => Promise<never>;
   signInWithOtp: (formData: FormData) => Promise<never>;
+  signInWithGoogle: () => Promise<undefined>;
   searchParams: {
-    message: string;
+    message?: string;
   };
 }) => {
   const [isMagicLinkChecked, setIsMagicLinkChecked] = useState(false);
   const [signUpInit, setSignUpInit] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
+
+  const handleFormSubmit = (action: (data: FormData) => Promise<any>) => {
+    setLoading(true);
+    console.log("here");
+    const formData = new FormData();
+    formData.append("email", form.getValues().email);
+    formData.append("password", form.getValues().password || "");
+    action(formData).finally(() => {
+      setLoading(false);
+    });
+  };
 
   return (
     <div className="flex flex-col">
       <Form {...form}>
-        <form action={signIn} className="flex flex-col gap-4">
+        <form className="flex flex-col gap-4">
           <FormField
             control={form.control}
             name="email"
@@ -86,7 +107,6 @@ const LoginForm = ({
                   <Checkbox
                     id="magic-link"
                     onCheckedChange={() => {
-                      console.log("clicked");
                       setIsMagicLinkChecked(!isMagicLinkChecked);
                     }}
                   />
@@ -97,7 +117,6 @@ const LoginForm = ({
                     <Checkbox
                       id="sign-up"
                       onCheckedChange={() => {
-                        console.log("clicked");
                         setSignUpInit(!signUpInit);
                       }}
                     />
@@ -110,7 +129,6 @@ const LoginForm = ({
                 <Checkbox
                   id="sign-up"
                   onCheckedChange={() => {
-                    console.log("clicked");
                     setSignUpInit(!signUpInit);
                   }}
                 />
@@ -119,17 +137,54 @@ const LoginForm = ({
             )}
 
             {isMagicLinkChecked ? (
-              <Button formAction={signInWithOtp}>Send Magic Link</Button>
+              <Button
+                disabled={loading}
+                formAction={() => {
+                  handleFormSubmit(signInWithOtp);
+                }}
+              >
+                {loading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  "Send Magic Link"
+                )}
+              </Button>
             ) : (
               <div className="flex flex-col gap-4">
-                {!signUpInit && <Button type="submit">Log In</Button>}
-                {signUpInit && <Button formAction={signUp}>Sign Up</Button>}
+                {!signUpInit && (
+                  <Button
+                    disabled={loading}
+                    type="button"
+                    onClick={() => handleFormSubmit(signIn)}
+                  >
+                    {loading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      "Sign In"
+                    )}
+                  </Button>
+                )}
+                {signUpInit && (
+                  <Button
+                    disabled={loading}
+                    formAction={() => {
+                      handleFormSubmit(signUp);
+                    }}
+                  >
+                    {loading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      "Sign Up"
+                    )}
+                  </Button>
+                )}
               </div>
             )}
           </div>
         </form>
       </Form>
-      <div>{searchParams.message}</div>
+      <div className="p-4">{searchParams?.message}</div>
+      <GoogleButtonAuth />
     </div>
   );
 };

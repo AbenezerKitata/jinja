@@ -1,5 +1,3 @@
-// import AuthButton from "@/components/auth-button";
-
 export default async function Index() {
-  return <div></div>;
+  return <div>Just the home page</div>;
 }

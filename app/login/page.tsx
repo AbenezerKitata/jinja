@@ -1,14 +1,33 @@
 import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import LoginForm from "@/components/login-form";
+import LoginForm from "@/components/client-form-login";
 
 export default function Login({
   searchParams,
 }: {
-  searchParams: { message: string };
+  searchParams: { message?: string };
 }) {
   const origin = headers().get("origin");
+
+  const signInWithGoogle = async () => {
+    "use server";
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        queryParams: {
+          access_type: "offline",
+          prompt: "consent",
+        },
+      },
+    });
+
+    console.log(data);
+    if (error) {
+      return redirect(`/login?message=Could not authenticate user`);
+    }
+  };
 
   const signInWithOtp = async (formData: FormData) => {
     "use server";
@@ -26,11 +45,11 @@ export default function Login({
 
     if (error) {
       return redirect(
-        `/login?message=Could not authenticate user, Error:${error.message}`
+        `?message=Could not authenticate user, Error:${error.message}`
       );
     }
 
-    return redirect("/login?message=Check your  email for the magic link ");
+    return redirect(`/login?message=Check your  email for the magic link `);
   };
 
   const signIn = async (formData: FormData) => {
@@ -46,7 +65,7 @@ export default function Login({
     });
 
     if (error) {
-      return redirect("/login?message=Could not authenticate user");
+      return redirect(`/login?message=Could not authenticate user`);
     }
 
     return redirect("/");
@@ -64,24 +83,25 @@ export default function Login({
       email,
       password,
       options: {
-        emailRedirectTo: `${origin}/auth/callback`,
+        emailRedirectTo: `/auth/callback`,
       },
     });
 
     if (error) {
-      return redirect("/login?message=Could not authenticate user");
+      return redirect(`/login?message=Could not authenticate user`);
     }
 
-    return redirect("/login?message=Check email to continue sign in process");
+    return redirect(`/login?message=Check email to continue sign in process`);
   };
 
   return (
-    <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2">
+    <div className=" flex flex-col px-8 w-full sm:max-w-md justify-center  gap-2">
       <LoginForm
         signIn={signIn}
         signUp={signUp}
         searchParams={searchParams}
         signInWithOtp={signInWithOtp}
+        signInWithGoogle={signInWithGoogle}
       />
     </div>
   );

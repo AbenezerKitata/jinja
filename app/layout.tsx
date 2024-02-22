@@ -1,8 +1,9 @@
+import { ThemeProvider } from "@/components/client-component-theme-provider";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
 import { createClient } from "@/utils/supabase/server";
-import { LeftNavBar } from "@/components/nav-left";
-import RightNavBar from "@/components/nav-right";
+import { LeftNavBar } from "@/components/client-component-nav-left";
+import RightNavBar from "@/components/component-nav-right";
+import { Toaster } from "@/components/ui/toaster";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -10,8 +11,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Abenezer Apps",
+  description: "Some crazy description over here",
 };
 
 const canInitSupabaseClient = () => {
@@ -29,8 +30,10 @@ export const isSupabaseConnected = canInitSupabaseClient();
 
 export default function RootLayout({
   children,
+  searchParams,
 }: {
   children: React.ReactNode;
+  searchParams: { message?: string };
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -41,13 +44,19 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          {searchParams?.message && (
+            <div className="bg-yellow-900 text-white p-4 text-center">
+              {searchParams?.message}
+            </div>
+          )}
           <div className="navbar flex justify-between p-4">
             <LeftNavBar />
-            <RightNavBar />
+            <RightNavBar searchParams={searchParams} />
           </div>
-          <main className="min-h-screen flex flex-col items-center">
+          <main className="min-h-screen p-4 flex justify-center w-full">
             {children}
           </main>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
