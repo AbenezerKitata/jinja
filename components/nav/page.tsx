@@ -4,7 +4,6 @@ import * as React from "react";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
-import { Icons } from "@/components/icons";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -12,8 +11,10 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
+  navMenuTrig,
 } from "@/components/ui/navigation-menu";
+import { usePathname } from "next/navigation";
+import { User } from "@supabase/supabase-js";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -22,27 +23,27 @@ const components: { title: string; href: string; description: string }[] = [
     description: "SOME DESCRIPTION.",
   },
   {
-    title: "SOME PLACEHOLDER",
+    title: "SOME PLACEHOLDER 1",
     href: "/SOMEWHERE",
     description: "SOME DESCRIPTION.",
   },
   {
-    title: "SOME PLACEHOLDER",
+    title: "SOME PLACEHOLDER 2",
     href: "/SOMEWHERE",
     description: "SOME DESCRIPTION.",
   },
   {
-    title: "SOME PLACEHOLDER",
+    title: "SOME PLACEHOLDER 3",
     href: "/SOMEWHERE",
     description: "SOME DESCRIPTION.",
   },
   {
-    title: "SOME PLACEHOLDER",
+    title: "SOME PLACEHOLDER 4",
     href: "/SOMEWHERE",
     description: "SOME DESCRIPTION.",
   },
   {
-    title: "SOME PLACEHOLDER",
+    title: "SOME PLACEHOLDER 5",
     href: "/SOMEWHERE",
     description: "SOME DESCRIPTION.",
   },
@@ -55,35 +56,37 @@ const otherComponents: { title: string; href: string; description: string }[] =
       description: "Other Description.",
     },
     {
-      title: "Other Placeholder",
+      title: "Other Placeholder 1",
       href: "/another-place",
       description: "Other Description.",
     },
     {
-      title: "Other Placeholder",
+      title: "Other Placeholder 2",
       href: "/another-place",
       description: "Other Description.",
     },
     {
-      title: "Other Placeholder",
+      title: "Other Placeholder 3",
       href: "/another-place",
       description: "Other Description.",
     },
     {
-      title: "Other Placeholder",
+      title: "Other Placeholder 4",
       href: "/another-place",
       description: "Other Description.",
     },
     {
-      title: "Other Placeholder",
+      title: "Other Placeholder 5",
       href: "/another-place",
       description: "Other Description.",
     },
   ];
 
-export default function Nav() {
+export default function Nav({ sessionUser }: { sessionUser: User | null }) {
+  const pathName = usePathname();
+
   return (
-    <NavigationMenu className="flex justify-between w-full">
+    <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger
@@ -133,16 +136,17 @@ export default function Nav() {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        {/* <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Documentation
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem> */}
       </NavigationMenuList>
       <NavigationMenuList>
-        <NavigationMenuItem></NavigationMenuItem>
+        <NavigationMenuItem>
+          {pathName !== "/login" && !sessionUser && (
+            <Link href="/login" legacyBehavior passHref>
+              <NavigationMenuLink className={navMenuTrig()}>
+                Login
+              </NavigationMenuLink>
+            </Link>
+          )}
+        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );
