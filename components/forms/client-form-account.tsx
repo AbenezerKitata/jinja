@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Textarea } from "./ui/textarea";
+import { Textarea } from "../ui/textarea";
 import { useCallback, useEffect, useState } from "react";
 import {
   Select,
@@ -91,7 +91,6 @@ export default function AccountForm({ user }: { user: User | null }) {
   const getProfile = useCallback(async () => {
     try {
       setLoading(true);
-
       const { data, error, status } = await supabase
         .from("profiles")
         .select(`full_name, username, avatar_url, bio, theme`)
@@ -191,9 +190,12 @@ export default function AccountForm({ user }: { user: User | null }) {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+    <div className="flex flex-col w-full p-4">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4"
+        >
           <FormField
             control={form.control}
             name="username"
@@ -203,9 +205,9 @@ export default function AccountForm({ user }: { user: User | null }) {
                 <FormControl>
                   <Input placeholder="user name" {...field} />
                 </FormControl>
-                <FormDescription>
-                  This is your public display name.
-                </FormDescription>
+                {/* <FormDescription>
+                This is your public display name.
+              </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -220,7 +222,7 @@ export default function AccountForm({ user }: { user: User | null }) {
                 <FormControl>
                   <Input placeholder="full name" {...field} />
                 </FormControl>
-                <FormDescription>This is your full name.</FormDescription>
+                {/* <FormDescription>This is your full name.</FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -235,7 +237,7 @@ export default function AccountForm({ user }: { user: User | null }) {
                 <FormControl>
                   <Input type="url" placeholder="avatar url" {...field} />
                 </FormControl>
-                <FormDescription>This is your avatar.</FormDescription>
+                {/* <FormDescription>This is your avatar.</FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -250,7 +252,7 @@ export default function AccountForm({ user }: { user: User | null }) {
                 <FormControl>
                   <Textarea placeholder="bio" {...field} />
                 </FormControl>
-                <FormDescription>This is your bio.</FormDescription>
+                {/* <FormDescription>This is your bio.</FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -287,10 +289,10 @@ export default function AccountForm({ user }: { user: User | null }) {
               {" "}
               <ArrowLeft />{" "}
             </Button>
-            <Button type="submit">{loading ? "Loading..." : "Update"}</Button>
+            <Button type="submit">{loading ? "..." : "Update"}</Button>
           </div>
-        </div>
-      </form>
-    </Form>
+        </form>
+      </Form>
+    </div>
   );
 }

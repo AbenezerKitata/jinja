@@ -1,10 +1,10 @@
 import React from "react";
-import { DropdownMenuItem } from "./ui/dropdown-menu";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { User as Usr } from "lucide-react";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
 import Image from "next/image";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 const AccountButtonClient = ({ user }: { user: User }) => {
   return (

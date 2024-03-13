@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { LogOut, User as Usr } from "lucide-react";
 import { ModeToggle } from "./client-button-mode-toggle";
 import { signOut } from "@/lib/actions";
@@ -33,10 +33,9 @@ const ButtonAuthDropdown = ({ user }: { user: User }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className=" w-44">
-        <DropdownMenuLabel>Options</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <AccountButtonClient user={user} />
+          <DropdownMenuSeparator />
           <div className="flex justify-between w-full px-2 py-1.5">
             <div className="hover:border-2 rounded-full border-2">
               <ModeToggle />

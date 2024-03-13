@@ -1,18 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/utils/supabase/client";
+import { loginWithGoogle } from "@/lib/actions";
 import { FcGoogle } from "react-icons/fc";
 
 export default function GoogleButtonAuth() {
-  const supabase = createClient();
-  const loginWithGoogle = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${location.origin}/auth/callback`,
-      },
-    });
-  };
-
   return (
     <Button
       variant="outline"

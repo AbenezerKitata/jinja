@@ -4,12 +4,12 @@ import React, { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
-import GoogleButtonAuth from "./button-google-auth";
+import GoogleButtonAuth from "../buttons/button-google-auth";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -28,12 +28,10 @@ const LoginForm = ({
   signUp,
   signInWithOtp,
   searchParams,
-  signInWithGoogle,
 }: {
   signIn: (formData: FormData) => Promise<never>;
   signUp: (formData: FormData) => Promise<never>;
   signInWithOtp: (formData: FormData) => Promise<never>;
-  signInWithGoogle: () => Promise<undefined>;
   searchParams: {
     message?: string;
   };
@@ -62,7 +60,7 @@ const LoginForm = ({
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full p-4">
       <Form {...form}>
         <form className="flex flex-col gap-4">
           <FormField
