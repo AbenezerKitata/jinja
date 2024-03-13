@@ -48,15 +48,23 @@ const LoginForm = ({
     },
   });
 
-  const handleFormSubmit = (action: (data: FormData) => Promise<any>) => {
+  const handleFormSubmit = async (action: (data: FormData) => Promise<any>) => {
     setLoading(true);
-    console.log("here");
+
     const formData = new FormData();
     formData.append("email", form.getValues().email);
     formData.append("password", form.getValues().password || "");
-    action(formData).finally(() => {
+
+    try {
+      const result = await action(formData);
+      // Handle the result from the action function
+      console.log(result);
+    } catch (error) {
+      // Handle any errors that occurred during the action
+      console.error(error);
+    } finally {
       setLoading(false);
-    });
+    }
   };
 
   return (
@@ -136,9 +144,7 @@ const LoginForm = ({
             {isMagicLinkChecked ? (
               <Button
                 disabled={loading}
-                formAction={() => {
-                  handleFormSubmit(signInWithOtp);
-                }}
+                onClick={() => handleFormSubmit(signInWithOtp)}
               >
                 {loading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -180,7 +186,7 @@ const LoginForm = ({
           </div>
         </form>
       </Form>
-      <div className="p-4">{searchParams?.message}</div>
+      <div className="p-4">✔️{searchParams?.message}</div>
       <div className="w-full" onClick={() => setLoading(true)}>
         <GoogleButtonAuth />
       </div>

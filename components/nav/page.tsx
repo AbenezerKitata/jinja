@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/navigation-menu";
 import { usePathname } from "next/navigation";
 import { User } from "@supabase/supabase-js";
+import { signOut } from "@/lib/actions";
+import { Loader } from "lucide-react";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -84,7 +86,13 @@ const otherComponents: { title: string; href: string; description: string }[] =
 
 export default function Nav({ sessionUser }: { sessionUser: User | null }) {
   const pathName = usePathname();
-
+  const [loading, setLoading] = React.useState(false);
+  const handleClick = async () => {
+    setLoading(true);
+    // Do your loading tasks here, for example, an API call
+    // After the tasks are done, navigate to the link
+    window.location.href = "/login";
+  };
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -141,10 +149,23 @@ export default function Nav({ sessionUser }: { sessionUser: User | null }) {
         <NavigationMenuItem>
           {pathName !== "/login" && !sessionUser && (
             <Link href="/login" legacyBehavior passHref>
-              <NavigationMenuLink className={navMenuTrig()}>
-                Login
+              <NavigationMenuLink
+                className={navMenuTrig()}
+                onClick={handleClick}
+              >
+                {loading ? <Loader /> : "Login"}
               </NavigationMenuLink>
             </Link>
+          )}
+          {sessionUser && (
+            <NavigationMenuLink
+              onClick={() => {
+                signOut();
+              }}
+              className={navMenuTrig()}
+            >
+              Logout
+            </NavigationMenuLink>
           )}
         </NavigationMenuItem>
       </NavigationMenuList>
