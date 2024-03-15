@@ -1,7 +1,8 @@
 "use server";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-
+import { Client } from "@notionhq/client";
+const notion = new Client({ auth: process.env.NOTION_JINJA });
 export const signOut = async () => {
   const supabase = createClient();
   await supabase.auth.signOut();
@@ -80,4 +81,16 @@ export const loginWithGoogle = async () => {
       redirectTo: `${location.origin}/auth/callback`,
     },
   });
+};
+
+export const getNotionDatabase = async (database_id: string) => {
+  try {
+    const response = await notion.databases.query({
+      database_id: database_id,
+    });
+    return response;
+  } catch (error) {
+    console.error("Error retrieving Notion page->->->:", error);
+    throw new Error("Failed to retrieve Notion page");
+  }
 };

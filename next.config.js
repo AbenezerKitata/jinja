@@ -14,6 +14,15 @@ const nextConfig = {
     // loader: "custom",
     // loaderFile: "./supabase-image-loader.ts"
   },
+  output: "standalone",
+  reactStrictMode: true,
+  swcMinify: true,
+  serverRuntimeConfig: {
+    project: process.env.NODE_ENV || "development",
+  },
+  publicRuntimeConfig: {
+    NODE_ENV: process.env.NODE_ENV,
+  },
 };
 
 module.exports = nextConfig;
